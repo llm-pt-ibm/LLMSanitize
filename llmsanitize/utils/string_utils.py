@@ -96,16 +96,24 @@ def overlap_substrings_sample(
     strings_set,
     string_size,
     n_samples,
-    text_processing_method=None
+    text_processing_method=None,
+    seed=None
 ):
+
+    if seed is not None:
+        np.random.seed(seed)
+    
     all_tagged = []
-    for i in tqdm(range(len(data))):
+    
+    for i in tqdm(range(len(data)), desc="Checking overlaps"):
         text_i = data[i]
         clean_text_i = text_i
-        if text_processing_method != None:
+        
+        if text_processing_method is not None:
             clean_text_i = text_processing_method(text_i)
-
+        
         tagged = 0
+        
         if len(clean_text_i) <= string_size:
             for k in strings_set.keys():
                 if k.startswith(clean_text_i):
@@ -113,11 +121,13 @@ def overlap_substrings_sample(
                     break
         else:
             for _ in range(n_samples):
-                start_idx = np.random.randint(0, len(clean_text_i)-string_size, 1)[0]
-                string = clean_text_i[start_idx:(start_idx+string_size)]
-                if string in strings_set.keys():
+                start_idx = np.random.randint(0, len(clean_text_i) - string_size + 1)
+                string = clean_text_i[start_idx:(start_idx + string_size)]
+                
+                if string in strings_set:
                     tagged = 1
                     break
+        
         all_tagged.append(int(tagged > 0))
-
+    
     return all_tagged

@@ -8,6 +8,7 @@ from llmsanitize.open_data_methods.gpt3 import main_gpt3
 from llmsanitize.open_data_methods.exact import main_exact
 from llmsanitize.open_data_methods.palm import main_palm
 from llmsanitize.open_data_methods.gpt4 import main_gpt4
+from llmsanitize.open_data_methods.gpt4_stream import main_gpt4_stream
 from llmsanitize.open_data_methods.platypus import main_platypus
 
 
@@ -30,6 +31,8 @@ class OpenDataContaminationChecker(BaseContaminationChecker):
             self.contamination_palm()
         elif method == "gpt-4":
             self.contamination_gpt4()
+        elif method == "gpt-4-stream":
+            self.contamination_gpt4_stream()
         elif method == "platypus":
             self.contamination_platypus()
 
@@ -92,6 +95,17 @@ class OpenDataContaminationChecker(BaseContaminationChecker):
             text_key=self.text_key,
             text_keys=self.text_keys
         )
+
+    def contamination_gpt4_stream(self):
+        main_gpt4_stream(
+           train_data_name=self.train_data_name,
+           eval_data=self.eval_data,            
+           eval_data_name=self.eval_data_name,  
+           eval_set_key=self.eval_set_key,
+           text_key=self.text_key,
+           num_proc=self.num_proc,              
+           seed=self.seed
+       )
 
     def contamination_platypus(self):
         main_platypus(
