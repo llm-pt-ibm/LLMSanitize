@@ -29,7 +29,11 @@ def parse_args():
     parser.add_argument("--eval_set_key", type=str, default="test",
                         help="Eval set key")
     parser.add_argument("--text_key", type=str, default="ctx",
-                        help="The key to text content of each open_data instance.")
+                        help="Fallback key to text content of each open_data instance.")
+    parser.add_argument("--train_text_key", type=str, default=None,
+                        help="Column name in the training corpus (overrides text_key)")
+    parser.add_argument("--eval_text_key", type=str, default=None,
+                        help="Column name in the benchmark dataset (overrides text_key)")
     parser.add_argument("--text_keys", type=str, default="",
                         help="The keys of text contents to be combined of each open_data instance - pass them as key_1+key_2.")
     parser.add_argument("--label_key", type=str, default="label",
@@ -40,6 +44,8 @@ def parse_args():
                         help="Whether to stream over the training dataset (helpful for large datasets like C4)")
     parser.add_argument("--stream_buffer_size", type = int, default=1000,
                         help="Buffer size for streaming over training set. Only used if --stream_train_data is passed.")
+    parser.add_argument("--batch_size", type=int, default=6000,
+                        help="Number of examples per stream batch for overlap methods (e.g., gpt-4).")
     parser.add_argument("--num_proc", type=int, default=16,
                         help="Number of threads for multi-processing")
     parser.add_argument("--method", type=str, choices=supported_methods.keys(),
@@ -134,6 +140,12 @@ def parse_args():
     return args
 
 def postprocess_args(args):
+    #if new specific train/eval parameters are not provided, inherit the default text_key value
+    if args.train_text_key is None:
+        args.train_text_key = args.text_key
+    if args.eval_text_key is None:
+        args.eval_text_key = args.text_key
+
     # if dataset name is set, set train_set and eval_set to dataset_name
     if args.dataset_name != "":
         args.train_data_name = args.dataset_name
@@ -148,7 +160,7 @@ def postprocess_args(args):
 
 def check_args(args):
     assert args.method in supported_methods, f"Error, {args.method} not in supported methods: {list(supported_methods.keys())}"
-    assert args.text_key != "" or args.text_keys != [], f"Error, specify some text key"
+    assert args.train_text_key != "" or args.eval_text_key != "" or args.text_keys != [], f"Error, specify some text key"
 
 def main():
     args = parse_args()

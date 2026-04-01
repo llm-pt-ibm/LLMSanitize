@@ -28,6 +28,7 @@ llmsanitize/open_data_methods/exact.py
 llmsanitize/open_data_methods/gpt2.py
 llmsanitize/open_data_methods/gpt3.py
 llmsanitize/open_data_methods/gpt4.py
+llmsanitize/open_data_methods/gpt4_stream.py
 llmsanitize/open_data_methods/palm.py
 llmsanitize/open_data_methods/platypus.py
 llmsanitize/prompts/__init__.py
@@ -36,6 +37,7 @@ llmsanitize/prompts/guided_prompting/general_instructions.py
 llmsanitize/prompts/guided_prompting/guided_instructions.py
 llmsanitize/utils/__init__.py
 llmsanitize/utils/dataset_utils.py
+llmsanitize/utils/embeddings_utils.py
 llmsanitize/utils/logger.py
 llmsanitize/utils/openai_utils.py
 llmsanitize/utils/post_utils.py

@@ -37,6 +37,11 @@ methods:
     help: "Method in the paper 'GPT-4 technical report'
     -> string matching (50-chars)"
 
+  - name: "gpt-4-stream"
+    type: "open_data"
+    help: "Adapted method from 'GPT-4 technical report' for streaming large corpora
+    -> string matching (50-chars) with batch dispersion and density metrics."
+
   - name: "platypus"
     type: "open_data"
     help: "Method in the paper 'Platypus: Quick, Cheap, and Powerful Refinement of LLMs'

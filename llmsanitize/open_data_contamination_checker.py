@@ -14,7 +14,14 @@ from llmsanitize.open_data_methods.platypus import main_platypus
 
 class OpenDataContaminationChecker(BaseContaminationChecker):
     def __init__(self, args):
+        self._current_method = args.method
         super(OpenDataContaminationChecker, self).__init__(args)
+
+    def normalize_text_key(self):
+        if self._current_method == "gpt-4-stream":
+            pass
+        else:
+            super(OpenDataContaminationChecker, self).normalize_text_key()
 
     def run_contamination(self, method):
         if not(method in self.supported_methods.keys()):
@@ -102,9 +109,11 @@ class OpenDataContaminationChecker(BaseContaminationChecker):
            eval_data=self.eval_data,            
            eval_data_name=self.eval_data_name,  
            eval_set_key=self.eval_set_key,
-           text_key=self.text_key,
+           train_text_key=self.train_text_key,  
+           eval_text_key=self.eval_text_key,    
            num_proc=self.num_proc,              
-           seed=self.seed
+           seed=self.seed,
+           batch_size=self.batch_size           
        )
 
     def contamination_platypus(self):

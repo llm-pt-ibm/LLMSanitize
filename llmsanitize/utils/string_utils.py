@@ -131,3 +131,42 @@ def overlap_substrings_sample(
         all_tagged.append(int(tagged > 0))
     
     return all_tagged
+
+def overlap_substrings_frequency(
+    data,
+    strings_set,
+    string_size,
+    n_samples,
+    text_processing_method=None,
+    seed=None
+):
+    if seed is not None:
+        np.random.seed(seed)
+    
+    all_frequencies = []
+    
+    for i in tqdm(range(len(data)), desc="Checking frequencies"):
+        text_i = data[i]
+        clean_text_i = text_i if text_processing_method is None else text_processing_method(text_i)
+        
+        freq_count = 0
+        
+        if len(clean_text_i) <= string_size:
+            for k in strings_set.keys():
+                if k.startswith(clean_text_i):
+                    freq_count += strings_set[k]
+        else:
+            max_freq_among_samples = 0
+            for _ in range(n_samples):
+                start_idx = np.random.randint(0, len(clean_text_i) - string_size + 1)
+                string = clean_text_i[start_idx:(start_idx + string_size)]
+                
+                if string in strings_set:
+                    current_freq = strings_set[string]
+                    max_freq_among_samples = max(max_freq_among_samples, current_freq)
+            
+            freq_count = max_freq_among_samples
+            
+        all_frequencies.append(freq_count)
+    
+    return all_frequencies
